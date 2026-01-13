@@ -5,40 +5,49 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Entries - iProgrammer</title>
 <style>
-body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color:#f4f7f6; padding:40px; }
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding:40px; background:#f4f7f6; }
 h1 { text-align:center; margin-bottom:30px; }
 table { width:100%; border-collapse:collapse; background:#fff; }
-th, td { padding:12px; border:1px solid #ddd; text-align:left; }
-th { background-color:#007bff; color:white; }
-tr:nth-child(even) { background-color:#f9f9f9; }
+th, td { padding:12px; border:1px solid #ddd; }
+th { background:#007bff; color:#fff; }
+tr:nth-child(even) { background:#f9f9f9; }
 </style>
 </head>
 <body>
 
-<h1>Form Submissions</h1>
+<h1>All User Entries</h1>
 <table id="entries-table">
     <tr><th>Email</th><th>Password</th><th>Time</th></tr>
 </table>
 
 <script>
-function loadEntries() {
-    const table = document.getElementById('entries-table');
-    // Clear old rows except header
-    table.innerHTML = '<tr><th>Email</th><th>Password</th><th>Time</th></tr>';
-    let entries = JSON.parse(localStorage.getItem('entries') || '[]');
-    entries.forEach(entry => {
-        const row = table.insertRow();
-        row.insertCell(0).innerText = entry.email;
-        row.insertCell(1).innerText = entry.password;
-        row.insertCell(2).innerText = entry.time;
-    });
+const password = prompt("Enter password to view entries:");
+
+if(!password) {
+    alert("Password required!");
+} else {
+    function loadEntries(){
+        fetch(`/api/entries?password=${encodeURIComponent(password)}`)
+        .then(res => {
+            if(res.status === 403) throw new Error("Unauthorized");
+            return res.json();
+        })
+        .then(data => {
+            const table = document.getElementById('entries-table');
+            table.innerHTML = '<tr><th>Email</th><th>Password</th><th>Time</th></tr>';
+            data.forEach(e => {
+                const row = table.insertRow();
+                row.insertCell(0).innerText = e.email;
+                row.insertCell(1).innerText = e.password;
+                row.insertCell(2).innerText = e.time;
+            });
+        })
+        .catch(err => alert(err.message));
+    }
+
+    loadEntries();
+    setInterval(loadEntries, 30000); // refresh every 30s
 }
-
-// Initial load
-loadEntries();
-
-// Auto-refresh every 30 seconds
-setInterval(loadEntries, 30000);
 </script>
 
 </body>
