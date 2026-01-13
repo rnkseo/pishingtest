@@ -5,57 +5,77 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login - iProgrammer</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; padding-top: 60px; position: relative; overflow: hidden; }
-#watermark-overlay { position: fixed; width: 150vw; height: 150vh; top: -25vh; left: -25vw; transform: rotate(-30deg); display: flex; flex-wrap: wrap; justify-content: center; align-content: center; z-index: -1; pointer-events: none; opacity: 0.06; }
-.watermark-item { width: 220px; height: auto; margin: 100px; filter: grayscale(100%); }
-.site-header { position: fixed; top: 0; left: 0; width: 100%; background-color: #fff; height: 80px; display: flex; align-items: center; padding: 0 40px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 1000; }
-.logo { height: 45px; width: auto; }
-.login-container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; position: relative; z-index: 1; }
-.login-container h2 { margin-bottom: 24px; color: #333; }
-.form-group { margin-bottom: 20px; text-align: left; }
-.form-group label { display: block; margin-bottom: 8px; color: #666; font-size: 14px; }
-.form-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; transition: border-color 0.3s; }
-.form-group input:focus { border-color: #007bff; outline: none; }
-.submit-btn { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s; }
-.submit-btn:hover { background-color: #0056b3; }
-.footer-links { margin-top: 20px; font-size: 14px; }
-.footer-links a { color: #007bff; text-decoration: none; }
-.footer-links a:hover { text-decoration: underline; }
+* { box-sizing: border-box; margin:0; padding:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+body { background-color:#f4f7f6; display:flex; justify-content:center; align-items:center; height:100vh; padding-top:60px; position:relative; overflow:hidden; }
+
+#watermark-overlay { position:fixed; width:150vw; height:150vh; top:-25vh; left:-25vw; transform:rotate(-30deg); display:flex; flex-wrap:wrap; justify-content:center; align-content:center; z-index:-1; pointer-events:none; opacity:0.06; }
+.watermark-item { width:220px; height:auto; margin:100px; filter:grayscale(100%); }
+
+.site-header { position:fixed; top:0; left:0; width:100%; background-color:#fff; height:80px; display:flex; align-items:center; padding:0 40px; box-shadow:0 2px 5px rgba(0,0,0,0.05); z-index:1000; }
+.logo { height:45px; width:auto; }
+
+.login-container { background-color:#fff; padding:40px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); width:90%; max-width:400px; text-align:center; position:relative; z-index:1; }
+.login-container h2 { margin-bottom:24px; color:#333; }
+.form-group { margin-bottom:20px; text-align:left; }
+.form-group label { display:block; margin-bottom:8px; color:#666; font-size:14px; }
+.form-group input { width:100%; padding:12px; border:1px solid #ddd; border-radius:4px; font-size:16px; transition:border-color 0.3s; }
+.form-group input:focus { border-color:#007bff; outline:none; }
+.submit-btn { width:100%; padding:12px; background-color:#007bff; color:white; border:none; border-radius:4px; font-size:16px; cursor:pointer; transition: background-color 0.3s; }
+.submit-btn:hover { background-color:#0056b3; }
+.footer-links { margin-top:20px; font-size:14px; }
+.footer-links a { color:#007bff; text-decoration:none; }
+.footer-links a:hover { text-decoration:underline; }
 </style>
 </head>
 <body>
 
 <div id="watermark-overlay"></div>
+
 <header class="site-header">
     <img src="https://iprogrammer.com/wp-content/uploads/2024/11/iProgrammer-logo.webp" alt="iProgrammer Logo" class="logo">
 </header>
 
 <div class="login-container">
     <h2>Welcome Back</h2>
-    <form action="/submit" method="POST">
+    <form id="loginForm">
         <div class="form-group">
             <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <input type="email" id="email" placeholder="Enter your email" required>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" id="password" placeholder="Enter your password" required>
         </div>
         <button type="submit" class="submit-btn">Log In</button>
-        <div class="footer-links"><p><a href="#">Forgot Password?</a></p></div>
+        <div class="footer-links"><p><a href="entries.html" target="_blank">View All Entries</a></p></div>
     </form>
 </div>
 
 <script>
+// Watermark
 const container = document.getElementById('watermark-overlay');
 const logoUrl = 'https://iprogrammer.com/wp-content/uploads/2024/11/iProgrammer-logo.webp';
-for (let i = 0; i < 35; i++) {
+for(let i=0;i<35;i++){
     const img = document.createElement('img');
     img.src = logoUrl;
     img.classList.add('watermark-item');
     container.appendChild(img);
 }
+
+// Handle form submission
+document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const entry = { email, password, time: new Date().toLocaleString() };
+
+    let entries = JSON.parse(localStorage.getItem('entries') || '[]');
+    entries.push(entry);
+    localStorage.setItem('entries', JSON.stringify(entries));
+
+    alert('Entry saved!');
+    this.reset();
+});
 </script>
 </body>
 </html>
